@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background: radial-gradient(circle at center, #0a1b2f, #000a1f);
+    color: white;
+    text-align: center;
+}
+
+#ui-container {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+button {
+    background: linear-gradient(90deg, #00b4d8, #0077b6);
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 0px 10px #00b4d8;
+}
+
+button:hover {
+    box-shadow: 0px 0px 15px #00ffea;
+}
+
+#attackWarning {
+    font-size: 18px;
+    display: none;
+}
