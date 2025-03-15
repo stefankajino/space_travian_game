@@ -1,1 +1,107 @@
- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Travian - Galaktička Strategija</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #0d0d0d;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #4caf50;
+        }
+        .resource-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #222;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .resource {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tap-mine {
+            width: 200px;
+            height: 200px;
+            background: url('crystal.png') no-repeat center;
+            background-size: cover;
+            border: 5px solid #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+        .tap-mine:active {
+            transform: scale(0.95);
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Space Travian - Galaktička Strategija</h1>
+        <div class="resource-bar">
+            <div class="resource">🔷 Kristali: <span id="crystal-count">0</span></div>
+            <div class="resource">🏠 Baza: Lv. <span id="base-level">1</span></div>
+        </div>
+        <div class="game-container">
+            <h2>⛏️ Tapni da majnuješ kristale!</h2>
+            <div class="tap-mine" onclick="mineCrystals()"></div>
+            <button class="btn" onclick="upgradeBase()">🏗️ Nadogradi Bazu</button>
+        </div>
+    </div>
+
+    <script>
+        let crystals = 0;
+        let baseLevel = 1;
+
+        function mineCrystals() {
+            crystals += Math.floor(Math.random() * 10) + 1; // Random broj kristala po tapu
+            document.getElementById("crystal-count").innerText = crystals;
+        }
+
+        function upgradeBase() {
+            let cost = baseLevel * 50; // Cena nadogradnje baze raste sa nivoom
+            if (crystals >= cost) {
+                crystals -= cost;
+                baseLevel++;
+                document.getElementById("crystal-count").innerText = crystals;
+                document.getElementById("base-level").innerText = baseLevel;
+                alert("🏗️ Baza je nadograđena na nivo " + baseLevel);
+            } else {
+                alert("❌ Nemaš dovoljno kristala za nadogradnju!");
+            }
+        }
+    </script>
+</body>
+</html>
+
