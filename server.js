@@ -1,10 +1,10 @@
-""
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const http = require('http');
 const cors = require('cors');
 const socketIo = require('socket.io');
+const { Telegraf } = require('telegraf');
 
 const app = express();
 const server = http.createServer(app);
@@ -13,9 +13,26 @@ const io = socketIo(server, { cors: { origin: "*" } });
 app.use(express.json());
 app.use(cors());
 
-// 📌 Konekcija sa MongoDB bazom (postavi svoj MongoDB URI u .env fajl)
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// ✅ PROVERA DA LI SU SVE PROMENLJIVE OKRUŽENJA POSTAVLJENE
+if (!process.env.BOT_TOKEN) {
+    console.error("❌ ERROR: BOT_TOKEN nije postavljen! Proveri Render Environment Variables.");
+    process.exit(1);
+}
 
+if (!process.env.MONGO_URI) {
+    console.error("❌ ERROR: MONGO_URI nije postavljen! Proveri Render Environment Variables.");
+    process.exit(1);
+}
+
+// 📌 Konekcija sa MongoDB bazom (ispravljeno, bez zastarelih opcija)
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("✅ Connected to MongoDB!"))
+    .catch(err => {
+        console.error("❌ MongoDB Connection Error:", err);
+        process.exit(1); // Ako baza ne radi, ne pokrećemo server
+    });
+
+// 📌 Definicija Modela Igrača u Bazi
 const PlayerSchema = new mongoose.Schema({
     telegramId: String,
     username: String,
@@ -65,11 +82,10 @@ app.post('/attack-player', async (req, res) => {
 
     res.json({ success: true, attackTime });
 });
-const { Telegraf } = require('telegraf');
 
-const bot = new Telegraf(process.env.BOT_TOKEN); // Uzimamo token iz .env fajla
+// 📌 Povezivanje Telegram bota
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// 📌 Start komanda - Dugme za pokretanje igre
 bot.start((ctx) => {
     ctx.reply('🚀 Welcome to Space Travian!\nClick the button below to start the game.', {
         reply_markup: {
@@ -81,5 +97,15 @@ bot.start((ctx) => {
 });
 
 // 📌 Pokretanje bota
-bot.launch();
-console.log('🤖 Telegram bot is running...');
+bot.launch()
+    .then(() => console.log('🤖 Telegram bot is running...'))
+    .catch(err => {
+        console.error("❌ ERROR: Telegram bot failed to start:", err);
+        process.exit(1);
+    });
+
+// 📌 Pokretanje Express servera
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+});
