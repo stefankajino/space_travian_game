@@ -23,21 +23,30 @@
             0% { opacity: 1; transform: translateY(0px) scale(1.2); }
             100% { opacity: 0; transform: translateY(-30px) scale(0.8); }
         }
+        .crystal-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            margin-top: 20px;
+            position: relative;
+        }
         .crystal-button {
             width: 150px;
             height: 150px;
-            background: radial-gradient(circle, cyan, blue);
+            background: none;
             border: none;
-            border-radius: 50%;
             cursor: pointer;
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 0 20px cyan;
+            outline: none;
             transition: transform 0.1s ease-in-out;
         }
-        .crystal-button:active {
-            transform: scale(1.1);
+        .crystal-button img {
+            width: 150px;
+            height: auto;
+            transition: transform 0.1s ease-in-out;
+        }
+        .crystal-button:active img {
+            transform: scale(1.1) translateY(5px);
         }
     </style>
 </head>
@@ -49,7 +58,13 @@
     <p>Mining Drones: <span id="drones">0</span></p>
     <p>Passive Income: <span id="passive-income">0</span></p>
     <p>Player Rank: <span id="player-rank">Bronze</span></p>
-    <button id="tap-button" class="crystal-button">Mine</button>
+    
+    <div class="crystal-container">
+        <button id="tap-button" class="crystal-button">
+            <img src="/mnt/data/Stone_Glowing_Crystal.H03.2k-removebg-preview.png" alt="Crystal">
+        </button>
+    </div>
+    
     <button id="upgrade-btn">Upgrade Mining</button>
     <button id="buy-drone-btn">Buy Drone</button>
     <button id="daily-reward-btn">Claim Daily Reward</button>
@@ -70,7 +85,6 @@
             let miningLevel = 1;
             let miningDrones = 0;
             let passiveIncome = 0;
-            let baseLevel = 1;
             let lastClaimedReward = null;
             
             function updateDisplay() {
