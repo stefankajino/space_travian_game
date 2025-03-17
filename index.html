@@ -5,43 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crystal Empire</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://i.imgur.com/EiHVQBm.png">
+
+    <!-- SEO i Open Graph meta tagovi -->
+    <meta name="description" content="Build your space empire by collecting crystals and upgrading your base!">
+    <meta property="og:title" content="Crystal Empire - Space Strategy Game">
+    <meta property="og:description" content="Tap to collect crystals, upgrade your base, and dominate the galaxy!">
+    <meta property="og:image" content="https://i.imgur.com/b6BIs1E.png">
+    <meta property="og:url" content="https://your-game-url.com">
 </head>
 <body>
-    <h1>Crystal Empire</h1>
-    <p>Server Crystals: <span id="server-crystals">0</span></p>
-    <p>Player Crystals: <span id="player-crystals">0</span></p>
-    <p>Mining Level: <span id="mining-level">1</span></p>
-    <p>Mining Drones: <span id="drones">0</span></p>
-    <p>Passive Income: <span id="passive-income">0</span></p>
-    <p>Player Rank: <span id="player-rank">Bronze</span></p>
-    
+
+    <h1>🌌 Crystal Empire</h1>
+
+    <div class="info-container">
+        <p>🔹 Server Crystals: <span id="server-crystals">0</span></p>
+        <p>💎 Player Crystals: <span id="player-crystals">0</span></p>
+        <p>⛏️ Mining Level: <span id="mining-level">1</span></p>
+        <p>🚀 Mining Drones: <span id="drones">0</span></p>
+        <p>💰 Passive Income: <span id="passive-income">0</span></p>
+        <p>🏆 Player Rank: <span id="player-rank">Bronze</span></p>
+    </div>
+
     <div class="crystal-container">
         <button id="tap-button" class="crystal-button">
             <img src="https://i.imgur.com/EiHVQBm.png" alt="Crystal">
         </button>
     </div>
-    
-    <button id="upgrade-btn">Upgrade Mining</button>
-    <button id="buy-drone-btn">Buy Drone</button>
-    <button id="daily-reward-btn">Claim Daily Reward</button>
 
-    <!-- Dugme za otvaranje mape -->
-    <button id="map-btn">Open Galactic Map</button>
+    <div class="button-container">
+        <button id="upgrade-btn">🔼 Upgrade Mining</button>
+        <button id="buy-drone-btn">🤖 Buy Drone</button>
+        <button id="daily-reward-btn">🎁 Claim Daily Reward</button>
+        <button id="map-btn">🗺️ Open Galactic Map</button>
+    </div>
 
-    <h2>Base Level</h2>
-    <img id="base-image" src="https://i.imgur.com/b6BIs1E.png" alt="Base Level 1" style="width: 300px; height: auto;">
-    
-    <h2>Actions in Progress</h2>
+    <h2>🏠 Base Level</h2>
+    <img id="base-image" src="https://i.imgur.com/b6BIs1E.png" alt="Base Level 1" class="base-image">
+
+    <h2>🔄 Actions in Progress</h2>
     <p id="actions-progress">None</p>
 
-    <h2>Events</h2>
+    <h2>🌟 Events</h2>
     <p id="events">None</p>
 
     <!-- Modal prozor za mapu -->
     <div id="map-modal" class="modal">
         <div class="modal-content">
             <span class="close" id="close-map">&times;</span>
-            <h2>Galactic Map</h2>
+            <h2>🗺️ Galactic Map</h2>
             <canvas id="map-canvas" width="600" height="600"></canvas>
         </div>
     </div>
@@ -49,5 +63,6 @@
     <!-- Povezivanje JavaScript fajlova -->
     <script src="js/game.js"></script>
     <script src="js/map.js"></script>
+
 </body>
 </html>
