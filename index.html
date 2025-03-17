@@ -3,105 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Travian - Galaktička Strategija</title>
+    <title>Galactic Harvest</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #0d0d0d;
+            background: #0a0a23;
             color: #ffffff;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
+            text-align: center;
             padding: 20px;
         }
-        h1 {
-            color: #4caf50;
-        }
-        .resource-bar {
-            display: flex;
-            justify-content: space-around;
-            background: #222;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .resource {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .tap-mine {
+        #crystal-field {
             width: 200px;
             height: 200px;
-            background: url('crystal.png') no-repeat center;
-            background-size: cover;
-            border: 5px solid #fff;
-            border-radius: 10px;
+            background: url('https://via.placeholder.com/200x200?text=Crystal+Field');
+            margin: 20px auto;
             cursor: pointer;
-            transition: transform 0.2s ease-in-out;
         }
-        .tap-mine:active {
-            transform: scale(0.95);
+        #map {
+            width: 400px;
+            height: 400px;
+            background: #111;
+            margin: 20px auto;
+            position: relative;
+            border: 1px solid #1e90ff;
         }
-        .btn {
-            margin-top: 20px;
+        .planet {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .crystal-planet { background: #00ff00; }
+        .empty-planet { background: #1e90ff; }
+        .strategic-planet { background: #ff0000; }
+        button {
             padding: 10px 20px;
-            background: #4caf50;
-            color: white;
+            margin: 5px;
+            background: #1e90ff;
             border: none;
+            color: white;
             cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
         }
-        .btn:hover {
-            background: #45a049;
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        #actions {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 Space Travian - Galaktička Strategija</h1>
-        <div class="resource-bar">
-            <div class="resource">🔷 Kristali: <span id="crystal-count">0</span></div>
-            <div class="resource">🏠 Baza: Lv. <span id="base-level">1</span></div>
-        </div>
-        <div class="game-container">
-            <h2>⛏️ Tapni da majnuješ kristale!</h2>
-            <div class="tap-mine" onclick="mineCrystals()"></div>
-            <button class="btn" onclick="upgradeBase()">🏗️ Nadogradi Bazu</button>
-        </div>
-    </div>
+    <h1>Galactic Harvest</h1>
+    <p>Server Crystals: <span id="server-crystals">50000000</span></p>
+    <p>Your Resources: Crystals: <span id="player-crystals">0</span> | Metal: <span id="player-metal">0</span> | Energy: <span id="player-energy">0</span></p>
+    <p>Storage: <span id="storage">0/1000</span></p>
+    <p>Fleet: <span id="fleet">0</span></p>
+    <p>Mining Drones: <span id="drones">0</span> (Passive: <span id="passive-income">0</span>/s)</p>
+    <p>Actions in Progress: <span id="actions-progress">None</span></p>
 
-    <script>
-        let crystals = 0;
-        let baseLevel = 1;
+    <div id="crystal-field" onclick="tapCrystal()"></div>
 
-        function mineCrystals() {
-            crystals += Math.floor(Math.random() * 10) + 1; // Random broj kristala po tapu
-            document.getElementById("crystal-count").innerText = crystals;
-        }
+    <button onclick="buildStorage()">Build Storage (200C, 100M, 50E, 10s)</button>
+    <button onclick="buildFleet()">Build Fleet (150C, 200M, 100E, 15s)</button>
+    <button onclick="buyDrone()">Buy Mining Drone (100C, 50M, 20E)</button>
+    <button onclick="upgradeMining()" id="upgrade-btn">Upgrade Mining (500C, 300M, 200E)</button>
 
-        function upgradeBase() {
-            let cost = baseLevel * 50; // Cena nadogradnje baze raste sa nivoom
-            if (crystals >= cost) {
-                crystals -= cost;
-                baseLevel++;
-                document.getElementById("crystal-count").innerText = crystals;
-                document.getElementById("base-level").innerText = baseLevel;
-                alert("🏗️ Baza je nadograđena na nivo " + baseLevel);
-            } else {
-                alert("❌ Nemaš dovoljno kristala za nadogradnju!");
-            }
-        }
-    </script>
+    <h2>Galactic Map</h2>
+    <div id="map"></div>
+    <div id="actions"></div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="game.js"></script>
 </body>
 </html>
-
