@@ -86,3 +86,37 @@ document.addEventListener("DOMContentLoaded", () => {
     
     updateDisplay();
 });
+let playerBase = null;
+const mapSize = 600;
+const sectors = 10; // 10x10 grid
+
+function generatePlayerBase() {
+    const x = Math.floor(Math.random() * sectors) * (mapSize / sectors);
+    const y = Math.floor(Math.random() * sectors) * (mapSize / sectors);
+    playerBase = { x, y };
+}
+
+function drawMap() {
+    const canvas = document.getElementById("map-canvas");
+    const ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Crtanje mreže
+    ctx.strokeStyle = "cyan";
+    for (let i = 0; i < sectors; i++) {
+        for (let j = 0; j < sectors; j++) {
+            ctx.strokeRect(i * (mapSize / sectors), j * (mapSize / sectors), mapSize / sectors, mapSize / sectors);
+        }
+    }
+
+    // Crtanje baze igrača
+    if (playerBase) {
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(playerBase.x + 10, playerBase.y + 10, 20, 20);
+    }
+}
+
+// Generiši bazu kada igrač uđe u igru
+generatePlayerBase();
+drawMap();
