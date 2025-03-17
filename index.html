@@ -6,73 +6,139 @@
     <title>Galactic Harvest</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #0a0a23;
-            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') #0a0a23;
+            color: #e0e0ff;
             text-align: center;
             padding: 20px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #1e90ff;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 5px 0;
+            text-shadow: 0 0 5px #00ff00;
         }
         #crystal-field {
-            width: 200px;
-            height: 200px;
-            background: url('https://via.placeholder.com/200x200?text=Crystal+Field');
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, #00ff00, #006400);
+            border-radius: 50%;
             margin: 20px auto;
             cursor: pointer;
+            box-shadow: 0 0 20px #00ff00;
+            transition: transform 0.2s;
+        }
+        #crystal-field:hover {
+            transform: scale(1.1);
         }
         #map {
-            width: 400px;
-            height: 400px;
-            background: #111;
-            margin: 20px auto;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, #111, #000);
+            margin: 30px auto;
             position: relative;
-            border: 1px solid #1e90ff;
+            border: 2px solid #1e90ff;
+            border-radius: 10px;
+            box-shadow: 0 0 30px #1e90ff;
         }
         .planet {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
             cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
-        .crystal-planet { background: #00ff00; }
+        .planet:hover {
+            transform: scale(1.2);
+        }
+        .crystal-planet { 
+            background: #00ff00; 
+            animation: pulse 2s infinite; 
+        }
         .empty-planet { background: #1e90ff; }
         .strategic-planet { background: #ff0000; }
         button {
-            padding: 10px 20px;
-            margin: 5px;
-            background: #1e90ff;
+            padding: 12px 25px;
+            margin: 8px;
+            background: linear-gradient(45deg, #1e90ff, #00b7eb);
             border: none;
-            color: white;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1em;
             cursor: pointer;
+            box-shadow: 0 5px 15px rgba(30, 144, 255, 0.5);
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(30, 144, 255, 0.8);
         }
         button:disabled {
             background: #555;
+            box-shadow: none;
             cursor: not-allowed;
+            transform: none;
         }
-        #actions {
-            margin-top: 20px;
+        #actions, #market, #leaderboard {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 0 20px #1e90ff;
+        }
+        h2 {
+            font-size: 1.8em;
+            text-shadow: 0 0 10px #ff00ff;
+            margin-bottom: 15px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <h1>Galactic Harvest</h1>
     <p>Server Crystals: <span id="server-crystals">50000000</span></p>
     <p>Your Resources: Crystals: <span id="player-crystals">0</span> | Metal: <span id="player-metal">0</span> | Energy: <span id="player-energy">0</span></p>
     <p>Storage: <span id="storage">0/1000</span></p>
-    <p>Fleet: <span id="fleet">0</span></p>
+    <p>Fleet: Scouts: <span id="scouts">0</span> | Cruisers: <span id="cruisers">0</span> | Battleships: <span id="battleships">0</span></p>
     <p>Mining Drones: <span id="drones">0</span> (Passive: <span id="passive-income">0</span>/s)</p>
     <p>Actions in Progress: <span id="actions-progress">None</span></p>
+    <p>Events: <span id="events">None</span></p>
 
     <div id="crystal-field" onclick="tapCrystal()"></div>
 
     <button onclick="buildStorage()">Build Storage (200C, 100M, 50E, 10s)</button>
-    <button onclick="buildFleet()">Build Fleet (150C, 200M, 100E, 15s)</button>
+    <button onclick="buildScout()">Build Scout (100C, 150M, 50E, 10s)</button>
+    <button onclick="buildCruiser()">Build Cruiser (200C, 300M, 100E, 15s)</button>
+    <button onclick="buildBattleship()">Build Battleship (500C, 700M, 300E, 20s)</button>
     <button onclick="buyDrone()">Buy Mining Drone (100C, 50M, 20E)</button>
     <button onclick="upgradeMining()" id="upgrade-btn">Upgrade Mining (500C, 300M, 200E)</button>
+    <button onclick="buildShield()">Build Planetary Shield (300C, 400M, 200E, 20s)</button>
 
     <h2>Galactic Map</h2>
     <div id="map"></div>
     <div id="actions"></div>
+
+    <h2>Market</h2>
+    <div id="market">
+        <button onclick="sellCrystals()">Sell 100 Crystals for 50 Metal</button>
+        <button onclick="buyEnergy()">Buy 100 Energy for 200 Crystals</button>
+    </div>
+
+    <h2>Leaderboard</h2>
+    <div id="leaderboard"></div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="game.js"></script>
