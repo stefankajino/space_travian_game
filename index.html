@@ -26,6 +26,93 @@
     <h2>Events</h2>
     <p id="events">None</p>
 
-    <script src="game.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let serverCrystals = 50000000;
+            let playerCrystals = 0;
+            let storageCapacity = 5000;
+            let miningLevel = 1;
+            let miningDrones = 0;
+            let passiveIncome = 0;
+            let baseLevel = 1;
+            
+            const baseThresholds = [0, 5000, 20000, 50000, 150000, 500000];
+            const baseImages = [
+                'lvl_1.png',
+                'lvl_2.png',
+                'lvl_3.png',
+                'lvl_4.png',
+                'lvl_5.png'
+            ];
+            
+            function updateDisplay() {
+                document.getElementById('server-crystals').innerText = serverCrystals;
+                document.getElementById('player-crystals').innerText = `${playerCrystals} / ${storageCapacity}`;
+                document.getElementById('mining-level').innerText = miningLevel;
+                document.getElementById('drones').innerText = miningDrones;
+                document.getElementById('passive-income').innerText = passiveIncome;
+                updateBaseLevel();
+            }
+            
+            function tapCrystal() {
+                if (serverCrystals > 0) {
+                    serverCrystals -= miningLevel;
+                    playerCrystals = Math.min(playerCrystals + miningLevel, storageCapacity);
+                    updateDisplay();
+                } else {
+                    alert("No more crystals left in the galaxy!");
+                }
+            }
+            
+            function updateBaseLevel() {
+                for (let i = baseThresholds.length - 1; i >= 0; i--) {
+                    if (playerCrystals >= baseThresholds[i]) {
+                        baseLevel = i + 1;
+                        document.getElementById('base-image').src = baseImages[i];
+                        break;
+                    }
+                }
+            }
+            
+            function upgradeMining() {
+                const cost = miningLevel * 1000;
+                if (playerCrystals >= cost && miningLevel < 5) {
+                    playerCrystals -= cost;
+                    miningLevel += 1;
+                    passiveIncome = miningDrones * miningLevel;
+                    updateDisplay();
+                } else {
+                    alert("Not enough crystals or max level reached!");
+                }
+            }
+            
+            function buyDrone() {
+                const cost = 500;
+                if (playerCrystals >= cost) {
+                    playerCrystals -= cost;
+                    miningDrones += 1;
+                    passiveIncome += miningLevel;
+                    updateDisplay();
+                } else {
+                    alert("Not enough crystals!");
+                }
+            }
+            
+            setInterval(() => {
+                if (serverCrystals > 0 && passiveIncome > 0) {
+                    let mined = Math.min(passiveIncome, serverCrystals);
+                    serverCrystals -= mined;
+                    playerCrystals = Math.min(playerCrystals + mined, storageCapacity);
+                    updateDisplay();
+                }
+            }, 1000);
+            
+            document.getElementById('tap-button').addEventListener('click', tapCrystal);
+            document.getElementById('upgrade-btn').addEventListener('click', upgradeMining);
+            document.getElementById('buy-drone-btn').addEventListener('click', buyDrone);
+            
+            updateDisplay();
+        });
+    </script>
 </body>
 </html>
