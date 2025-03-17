@@ -13,9 +13,11 @@
     <p>Mining Level: <span id="mining-level">1</span></p>
     <p>Mining Drones: <span id="drones">0</span></p>
     <p>Passive Income: <span id="passive-income">0</span></p>
+    <p>Player Rank: <span id="player-rank">Bronze</span></p>
     <button id="tap-button">Mine Crystals</button>
     <button id="upgrade-btn">Upgrade Mining</button>
     <button id="buy-drone-btn">Buy Drone</button>
+    <button id="daily-reward-btn">Claim Daily Reward</button>
     
     <h2>Base Level</h2>
     <img id="base-image" src="https://i.imgur.com/b6BIs1E.png" alt="Base Level 1" style="width: 300px; height: auto;">
@@ -35,6 +37,7 @@
             let miningDrones = 0;
             let passiveIncome = 0;
             let baseLevel = 1;
+            let lastClaimedReward = null;
             
             const baseThresholds = [0, 5000, 20000, 50000, 150000, 500000];
             const baseImages = [
@@ -45,12 +48,16 @@
                 'lvl_5.png'
             ];
             
+            const ranks = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Legendary"];
+            const rankThresholds = [0, 10000, 50000, 200000, 1000000, 5000000];
+            
             function updateDisplay() {
                 document.getElementById('server-crystals').innerText = serverCrystals;
                 document.getElementById('player-crystals').innerText = `${playerCrystals} / ${storageCapacity}`;
                 document.getElementById('mining-level').innerText = miningLevel;
                 document.getElementById('drones').innerText = miningDrones;
                 document.getElementById('passive-income').innerText = passiveIncome;
+                document.getElementById('player-rank').innerText = getPlayerRank();
                 updateBaseLevel();
             }
             
@@ -58,6 +65,7 @@
                 if (serverCrystals > 0) {
                     serverCrystals -= miningLevel;
                     playerCrystals = Math.min(playerCrystals + miningLevel, storageCapacity);
+                    showClickEffect();
                     updateDisplay();
                 } else {
                     alert("No more crystals left in the galaxy!");
@@ -68,9 +76,7 @@
                 for (let i = baseThresholds.length - 1; i >= 0; i--) {
                     if (playerCrystals >= baseThresholds[i]) {
                         baseLevel = i + 1;
-                        let newSrc = baseImages[i];
-                        console.log("Updating base image to:", newSrc);
-                        document.getElementById('base-image').src = newSrc;
+                        document.getElementById('base-image').src = baseImages[i];
                         break;
                     }
                 }
@@ -100,6 +106,35 @@
                 }
             }
             
+            function getPlayerRank() {
+                for (let i = rankThresholds.length - 1; i >= 0; i--) {
+                    if (playerCrystals >= rankThresholds[i]) {
+                        return ranks[i];
+                    }
+                }
+                return "Bronze";
+            }
+            
+            function claimDailyReward() {
+                let today = new Date().toDateString();
+                if (lastClaimedReward !== today) {
+                    playerCrystals += 1000;
+                    lastClaimedReward = today;
+                    updateDisplay();
+                    alert("You received 1000 crystals as a daily reward!");
+                } else {
+                    alert("You have already claimed your daily reward today.");
+                }
+            }
+            
+            function showClickEffect() {
+                let effect = document.createElement("div");
+                effect.className = "click-effect";
+                effect.innerText = "+" + miningLevel;
+                document.body.appendChild(effect);
+                setTimeout(() => effect.remove(), 500);
+            }
+            
             setInterval(() => {
                 if (serverCrystals > 0 && passiveIncome > 0) {
                     let mined = Math.min(passiveIncome, serverCrystals);
@@ -112,6 +147,7 @@
             document.getElementById('tap-button').addEventListener('click', tapCrystal);
             document.getElementById('upgrade-btn').addEventListener('click', upgradeMining);
             document.getElementById('buy-drone-btn').addEventListener('click', buyDrone);
+            document.getElementById('daily-reward-btn').addEventListener('click', claimDailyReward);
             
             updateDisplay();
         });
