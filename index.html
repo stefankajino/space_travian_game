@@ -1,39 +1,168 @@
-body {
-    text-align: center;
-    font-family: Arial, sans-serif;
-    background-color: #0d1b2a;
-    color: white;
-    margin: 0;
-    padding: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travian-like Map</title>
+    <style>
+        #map-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        #map-canvas {
+            background: #fff;
+        }
+        #close-map {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button id="map-btn">Open Map</button>
+    <div id="map-modal">
+        <canvas id="map-canvas" width="600" height="600"></canvas>
+        <button id="close-map">Close</button>
+    </div>
 
-#video-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const mapBtn = document.getElementById("map-btn");
+            const mapModal = document.getElementById("map-modal");
+            const closeMap = document.getElementById("close-map");
+            const canvas = document.getElementById("map-canvas");
+            const ctx = canvas.getContext("2d");
 
-#intro-video {
-    width: 100%;
-    height: auto;
-    max-height: 100vh;
-}
+            const mapSize = 600;
+            const sectors = 10; // 10x10 grid
+            const tileSize = mapSize / sectors;
+            let playerBase = null;
+            let terrain = [];
 
-#app-content {
-    padding: 20px;
-}
+            // Define terrain types and their colors
+            const terrainTypes = ["plains", "forest", "mountain", "lake", "desert"];
+            const terrainColors = {
+                "plains": "green",
+                "forest": "darkgreen",
+                "mountain": "gray",
+                "lake": "blue",
+                "desert": "brown"
+            };
 
-@media (max-width: 600px) {
-    h1 {
-        font-size: 24px;
-    }
-    p {
-        font-size: 16px;
-    }
-}
+            // Generate terrain for each tile
+            function generateTerrain() {
+                for (let i = 0; i < sectors; i++) {
+                    terrain[i] = [];
+                    for (let j = 0; j < sectors; j++) {
+                        const randomType = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
+                        terrain[i][j] = randomType;
+                    }
+                }
+            }
+
+            // Generate player's base at a random tile
+            function generatePlayerBase() {
+                const tileX = Math.floor(Math.random() * sectors);
+                const tileY = Math.floor(Math.random() * sectors);
+                playerBase = { x: tileX * tileSize, y: tileY * tileSize, tileX, tileY };
+            }
+
+            // Draw the map
+            function drawMap() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw terrain backgrounds
+                for (let i = 0; i < sectors; i++) {
+                    for (let j = 0; j < sectors; j++) {
+                        const terrainType = terrain[i][j];
+                        ctx.fillStyle = terrainColors[terrainType];
+                        ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
+                    }
+                }
+
+                // Draw subtle grid lines
+                ctx.strokeStyle = "#ccc"; // Light gray for subtlety
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= sectors; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * tileSize, 0);
+                    ctx.lineTo(i * tileSize, mapSize);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, i * tileSize);
+                    ctx.lineTo(mapSize, i * tileSize);
+                    ctx.stroke();
+                }
+
+                // Draw coordinate labels
+                ctx.fillStyle = "black";
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 1;
+                ctx.font = "10px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                for (let i = 0; i < sectors; i++) {
+                    for (let j = 0; j < sectors; j++) {
+                        const coordX = i - 5;
+                        const coordY = j - 5;
+                        const text = `(${coordX},${coordY})`;
+                        const textX = i * tileSize + tileSize / 2;
+                        const textY = j * tileSize + tileSize / 2;
+                        ctx.strokeText(text, textX, textY); // White outline
+                        ctx.fillText(text, textX, textY);   // Black text
+                    }
+                }
+
+                // Highlight player's base tile
+                if (playerBase) {
+                    ctx.strokeStyle = "yellow";
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(playerBase.x, playerBase.y, tileSize, tileSize);
+                }
+
+                // Draw player's base as a house
+                if (playerBase) {
+                    const houseX = playerBase.x + tileSize / 2;
+                    const houseY = playerBase.y + tileSize / 2;
+
+                    // House base (rectangle)
+                    ctx.fillStyle = "brown";
+                    ctx.fillRect(houseX - 15, houseY - 10, 30, 20);
+
+                    // House roof (triangle)
+                    ctx.beginPath();
+                    ctx.moveTo(houseX - 20, houseY - 10);
+                    ctx.lineTo(houseX, houseY - 30);
+                    ctx.lineTo(houseX + 20, houseY - 10);
+                    ctx.closePath();
+                    ctx.fillStyle = "red";
+                    ctx.fill();
+                }
+            }
+
+            // Event listeners for opening and closing the map
+            mapBtn.addEventListener("click", () => {
+                mapModal.style.display = "flex";
+                drawMap();
+            });
+
+            closeMap.addEventListener("click", () => {
+                mapModal.style.display = "none";
+            });
+
+            // Initialize the map
+            generateTerrain();
+            generatePlayerBase();
+        });
+    </script>
+</body>
+</html>
