@@ -5,50 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crystal Empire</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            background-color: #0d1b2a;
-            color: white;
-        }
-        .click-effect {
-            position: absolute;
-            color: cyan;
-            font-size: 20px;
-            font-weight: bold;
-            animation: fadeOut 1s ease-out;
-        }
-        @keyframes fadeOut {
-            0% { opacity: 1; transform: translateY(0px) scale(1.2); }
-            100% { opacity: 0; transform: translateY(-30px) scale(0.8); }
-        }
-        .crystal-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 300px;
-            margin-top: 20px;
-            position: relative;
-        }
-        .crystal-button {
-            width: 150px;
-            height: 150px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            outline: none;
-            transition: transform 0.1s ease-in-out;
-        }
-        .crystal-button img {
-            width: 150px;
-            height: auto;
-            transition: transform 0.1s ease-in-out;
-        }
-        .crystal-button:active img {
-            transform: scale(1.1) translateY(5px);
-        }
-    </style>
 </head>
 <body>
     <h1>Crystal Empire</h1>
@@ -78,95 +34,7 @@
     <h2>Events</h2>
     <p id="events">None</p>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            let serverCrystals = 50000000;
-            let playerCrystals = 0;
-            let miningLevel = 1;
-            let miningDrones = 0;
-            let passiveIncome = 0;
-            let lastClaimedReward = null;
-            
-            function updateDisplay() {
-                document.getElementById('server-crystals').innerText = serverCrystals;
-                document.getElementById('player-crystals').innerText = playerCrystals;
-                document.getElementById('mining-level').innerText = miningLevel;
-                document.getElementById('drones').innerText = miningDrones;
-                document.getElementById('passive-income').innerText = passiveIncome;
-            }
-            
-            function tapCrystal(event) {
-                if (serverCrystals > 0) {
-                    serverCrystals -= miningLevel;
-                    playerCrystals += miningLevel;
-                    showClickEffect(event.clientX, event.clientY);
-                    updateDisplay();
-                } else {
-                    alert("No more crystals left in the galaxy!");
-                }
-            }
-            
-            function showClickEffect(x, y) {
-                let effect = document.createElement("div");
-                effect.className = "click-effect";
-                effect.innerText = "+" + miningLevel;
-                effect.style.left = x + "px";
-                effect.style.top = y + "px";
-                document.body.appendChild(effect);
-                setTimeout(() => effect.remove(), 1000);
-            }
-            
-            function upgradeMining() {
-                const cost = miningLevel * 1000;
-                if (playerCrystals >= cost) {
-                    playerCrystals -= cost;
-                    miningLevel += 1;
-                    passiveIncome += 5;
-                    updateDisplay();
-                } else {
-                    alert("Not enough crystals!");
-                }
-            }
-            
-            function buyDrone() {
-                const cost = 500;
-                if (playerCrystals >= cost) {
-                    playerCrystals -= cost;
-                    miningDrones += 1;
-                    passiveIncome += 10;
-                    updateDisplay();
-                } else {
-                    alert("Not enough crystals!");
-                }
-            }
-            
-            function claimDailyReward() {
-                let today = new Date().toDateString();
-                if (lastClaimedReward !== today) {
-                    playerCrystals += 1000;
-                    lastClaimedReward = today;
-                    updateDisplay();
-                    alert("You received 1000 crystals!");
-                } else {
-                    alert("You already claimed your daily reward!");
-                }
-            }
-            
-            setInterval(() => {
-                if (serverCrystals > 0 && passiveIncome > 0) {
-                    serverCrystals -= passiveIncome;
-                    playerCrystals += passiveIncome;
-                    updateDisplay();
-                }
-            }, 1000);
-            
-            document.getElementById('tap-button').addEventListener('click', tapCrystal);
-            document.getElementById('upgrade-btn').addEventListener('click', upgradeMining);
-            document.getElementById('buy-drone-btn').addEventListener('click', buyDrone);
-            document.getElementById('daily-reward-btn').addEventListener('click', claimDailyReward);
-            
-            updateDisplay();
-        });
-    </script>
+    <!-- Povezivanje game.js -->
+    <script src="game.js"></script>
 </body>
 </html>

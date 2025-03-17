@@ -1,41 +1,49 @@
 body {
-    margin: 0;
-    overflow: hidden;
-    font-family: 'Arial', sans-serif;
-    background: radial-gradient(circle at center, #0a1b2f, #000a1f);
-    color: white;
     text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #0d1b2a;
+    color: white;
 }
 
-#ui-container {
+.click-effect {
     position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    border-radius: 8px;
+    color: cyan;
+    font-size: 20px;
+    font-weight: bold;
+    animation: fadeOut 0.7s ease-out;
+    pointer-events: none;
 }
 
-button {
-    background: linear-gradient(90deg, #00b4d8, #0077b6);
+@keyframes fadeOut {
+    0% { opacity: 1; transform: translateY(0px) scale(1.2); }
+    100% { opacity: 0; transform: translateY(-30px) scale(0.8); }
+}
+
+.crystal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    margin-top: 20px;
+    position: relative;
+}
+
+.crystal-button {
+    width: 150px;
+    height: 150px;
+    background: none;
     border: none;
-    padding: 10px;
-    font-size: 16px;
-    color: white;
-    border-radius: 10px;
     cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0px 0px 10px #00b4d8;
+    outline: none;
+    transition: transform 0.05s ease-in-out;
 }
 
-button:hover {
-    box-shadow: 0px 0px 15px #00ffea;
+.crystal-button img {
+    width: 150px;
+    height: auto;
+    transition: transform 0.05s ease-in-out;
 }
 
-#attackWarning {
-    font-size: 18px;
-    display: none;
+.crystal-button:active img {
+    transform: scale(1.05) translateY(2px);
 }
