@@ -5,6 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crystal Empire</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #0d1b2a;
+            color: white;
+        }
+        .click-effect {
+            position: absolute;
+            color: cyan;
+            font-size: 20px;
+            font-weight: bold;
+            animation: fadeOut 1s ease-out;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-30px) scale(0.8); }
+        }
+        .crystal-button {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, cyan, blue);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 0 20px cyan;
+            transition: transform 0.1s ease-in-out;
+        }
+        .crystal-button:active {
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
     <h1>Crystal Empire</h1>
@@ -14,7 +49,7 @@
     <p>Mining Drones: <span id="drones">0</span></p>
     <p>Passive Income: <span id="passive-income">0</span></p>
     <p>Player Rank: <span id="player-rank">Bronze</span></p>
-    <button id="tap-button">Mine Crystals</button>
+    <button id="tap-button" class="crystal-button">Mine</button>
     <button id="upgrade-btn">Upgrade Mining</button>
     <button id="buy-drone-btn">Buy Drone</button>
     <button id="daily-reward-btn">Claim Daily Reward</button>
@@ -32,65 +67,50 @@
         document.addEventListener("DOMContentLoaded", () => {
             let serverCrystals = 50000000;
             let playerCrystals = 0;
-            let storageCapacity = 5000;
             let miningLevel = 1;
             let miningDrones = 0;
             let passiveIncome = 0;
             let baseLevel = 1;
             let lastClaimedReward = null;
             
-            const baseThresholds = [0, 5000, 20000, 50000, 150000, 500000];
-            const baseImages = [
-                'https://i.imgur.com/b6BIs1E.png',
-                'lvl_2.png',
-                'lvl_3.png',
-                'lvl_4.png',
-                'lvl_5.png'
-            ];
-            
-            const ranks = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Legendary"];
-            const rankThresholds = [0, 10000, 50000, 200000, 1000000, 5000000];
-            
             function updateDisplay() {
                 document.getElementById('server-crystals').innerText = serverCrystals;
-                document.getElementById('player-crystals').innerText = `${playerCrystals} / ${storageCapacity}`;
+                document.getElementById('player-crystals').innerText = playerCrystals;
                 document.getElementById('mining-level').innerText = miningLevel;
                 document.getElementById('drones').innerText = miningDrones;
                 document.getElementById('passive-income').innerText = passiveIncome;
-                document.getElementById('player-rank').innerText = getPlayerRank();
-                updateBaseLevel();
             }
             
-            function tapCrystal() {
+            function tapCrystal(event) {
                 if (serverCrystals > 0) {
                     serverCrystals -= miningLevel;
-                    playerCrystals = Math.min(playerCrystals + miningLevel, storageCapacity);
-                    showClickEffect();
+                    playerCrystals += miningLevel;
+                    showClickEffect(event.clientX, event.clientY);
                     updateDisplay();
                 } else {
                     alert("No more crystals left in the galaxy!");
                 }
             }
             
-            function updateBaseLevel() {
-                for (let i = baseThresholds.length - 1; i >= 0; i--) {
-                    if (playerCrystals >= baseThresholds[i]) {
-                        baseLevel = i + 1;
-                        document.getElementById('base-image').src = baseImages[i];
-                        break;
-                    }
-                }
+            function showClickEffect(x, y) {
+                let effect = document.createElement("div");
+                effect.className = "click-effect";
+                effect.innerText = "+" + miningLevel;
+                effect.style.left = x + "px";
+                effect.style.top = y + "px";
+                document.body.appendChild(effect);
+                setTimeout(() => effect.remove(), 1000);
             }
             
             function upgradeMining() {
                 const cost = miningLevel * 1000;
-                if (playerCrystals >= cost && miningLevel < 5) {
+                if (playerCrystals >= cost) {
                     playerCrystals -= cost;
                     miningLevel += 1;
-                    passiveIncome = miningDrones * miningLevel;
+                    passiveIncome += 5;
                     updateDisplay();
                 } else {
-                    alert("Not enough crystals or max level reached!");
+                    alert("Not enough crystals!");
                 }
             }
             
@@ -99,20 +119,11 @@
                 if (playerCrystals >= cost) {
                     playerCrystals -= cost;
                     miningDrones += 1;
-                    passiveIncome += miningLevel;
+                    passiveIncome += 10;
                     updateDisplay();
                 } else {
                     alert("Not enough crystals!");
                 }
-            }
-            
-            function getPlayerRank() {
-                for (let i = rankThresholds.length - 1; i >= 0; i--) {
-                    if (playerCrystals >= rankThresholds[i]) {
-                        return ranks[i];
-                    }
-                }
-                return "Bronze";
             }
             
             function claimDailyReward() {
@@ -121,25 +132,16 @@
                     playerCrystals += 1000;
                     lastClaimedReward = today;
                     updateDisplay();
-                    alert("You received 1000 crystals as a daily reward!");
+                    alert("You received 1000 crystals!");
                 } else {
-                    alert("You have already claimed your daily reward today.");
+                    alert("You already claimed your daily reward!");
                 }
-            }
-            
-            function showClickEffect() {
-                let effect = document.createElement("div");
-                effect.className = "click-effect";
-                effect.innerText = "+" + miningLevel;
-                document.body.appendChild(effect);
-                setTimeout(() => effect.remove(), 500);
             }
             
             setInterval(() => {
                 if (serverCrystals > 0 && passiveIncome > 0) {
-                    let mined = Math.min(passiveIncome, serverCrystals);
-                    serverCrystals -= mined;
-                    playerCrystals = Math.min(playerCrystals + mined, storageCapacity);
+                    serverCrystals -= passiveIncome;
+                    playerCrystals += passiveIncome;
                     updateDisplay();
                 }
             }, 1000);
