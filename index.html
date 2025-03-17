@@ -24,7 +24,10 @@
     <button id="upgrade-btn">Upgrade Mining</button>
     <button id="buy-drone-btn">Buy Drone</button>
     <button id="daily-reward-btn">Claim Daily Reward</button>
-    
+
+    <!-- Dugme za otvaranje mape -->
+    <button id="map-btn">Open Galactic Map</button>
+
     <h2>Base Level</h2>
     <img id="base-image" src="https://i.imgur.com/b6BIs1E.png" alt="Base Level 1" style="width: 300px; height: auto;">
     
@@ -34,11 +37,17 @@
     <h2>Events</h2>
     <p id="events">None</p>
 
-    <!-- Povezivanje game.js -->
-    <script src="game.js"></script>
-</body><h2>Galactic Map</h2>
-<div id="map-container">
-    <canvas id="map-canvas" width="600" height="600"></canvas>
-</div>
+    <!-- Modal prozor za mapu -->
+    <div id="map-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-map">&times;</span>
+            <h2>Galactic Map</h2>
+            <canvas id="map-canvas" width="600" height="600"></canvas>
+        </div>
+    </div>
 
+    <!-- Povezivanje JavaScript fajlova -->
+    <script src="js/game.js"></script>
+    <script src="js/map.js"></script>
+</body>
 </html>
