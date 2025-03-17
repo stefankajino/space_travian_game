@@ -18,7 +18,7 @@
     <button id="buy-drone-btn">Buy Drone</button>
     
     <h2>Base Level</h2>
-    <img id="base-image" src="lvl_1.png" alt="Base Level 1" style="width: 300px; height: auto;">
+    <img id="base-image" src="https://i.imgur.com/b6BIs1E.png" alt="Base Level 1" style="width: 300px; height: auto;">
     
     <h2>Actions in Progress</h2>
     <p id="actions-progress">None</p>
@@ -38,7 +38,7 @@
             
             const baseThresholds = [0, 5000, 20000, 50000, 150000, 500000];
             const baseImages = [
-                'lvl_1.png',
+                'https://i.imgur.com/b6BIs1E.png',
                 'lvl_2.png',
                 'lvl_3.png',
                 'lvl_4.png',
@@ -68,7 +68,9 @@
                 for (let i = baseThresholds.length - 1; i >= 0; i--) {
                     if (playerCrystals >= baseThresholds[i]) {
                         baseLevel = i + 1;
-                        document.getElementById('base-image').src = baseImages[i];
+                        let newSrc = baseImages[i];
+                        console.log("Updating base image to:", newSrc);
+                        document.getElementById('base-image').src = newSrc;
                         break;
                     }
                 }
